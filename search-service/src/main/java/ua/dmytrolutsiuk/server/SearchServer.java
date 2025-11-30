@@ -13,8 +13,8 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URI;
-import java.net.URLDecoder;
 import java.net.URISyntaxException;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
-public class HttpServer implements AutoCloseable {
+public class SearchServer implements AutoCloseable {
 
     private final int port;
     private final ThreadSafeSearchIndex threadSafeSearchIndex;
@@ -33,7 +33,7 @@ public class HttpServer implements AutoCloseable {
     private volatile boolean running = false;
     private ServerSocket serverSocket;
 
-    public HttpServer(int port, ThreadSafeSearchIndex threadSafeSearchIndex, ThreadPool threadPool) {
+    public SearchServer(int port, ThreadSafeSearchIndex threadSafeSearchIndex, ThreadPool threadPool) {
         this.port = port;
         this.threadSafeSearchIndex = threadSafeSearchIndex;
         this.threadPool = threadPool;
@@ -90,11 +90,8 @@ public class HttpServer implements AutoCloseable {
                 return;
             }
 
-            URI uri;
-            try {
-                uri = new URI(rawTarget);
-            } catch (URISyntaxException _) {
-                responseWriter.writeBadRequest(out, "Invalid URI");
+            URI uri = parseUri(rawTarget, out);
+            if (uri == null) {
                 return;
             }
 
@@ -119,6 +116,19 @@ public class HttpServer implements AutoCloseable {
 
         } catch (IOException e) {
             log.error("Error in handleClient()", e);
+        }
+    }
+
+    private URI parseUri(String rawTarget, OutputStream out) {
+        try {
+            return new URI(rawTarget);
+        } catch (URISyntaxException _) {
+            try {
+                responseWriter.writeBadRequest(out, "Invalid URI");
+            } catch (IOException e) {
+                log.error("Error writing bad request response", e);
+            }
+            return null;
         }
     }
 

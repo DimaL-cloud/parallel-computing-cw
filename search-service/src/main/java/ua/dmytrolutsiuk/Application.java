@@ -2,7 +2,7 @@ package ua.dmytrolutsiuk;
 
 import lombok.extern.slf4j.Slf4j;
 import ua.dmytrolutsiuk.search.*;
-import ua.dmytrolutsiuk.server.HttpServer;
+import ua.dmytrolutsiuk.server.SearchServer;
 import ua.dmytrolutsiuk.threadpool.FixedThreadPool;
 import ua.dmytrolutsiuk.threadpool.ThreadPool;
 
@@ -30,16 +30,16 @@ public class Application {
         IndexScheduler scheduler = new IndexScheduler(fileIndexer, indexDir, periodSeconds);
         scheduler.start();
 
-        var httpServer = new HttpServer(8080, indexService, httpThreadPool);
+        var searchServer = new SearchServer(8080, indexService, httpThreadPool);
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             log.info("Shutting down...");
             scheduler.close();
-            httpServer.close();
+            searchServer.close();
             httpThreadPool.shutdown();
             indexingThreadPool.shutdown();
         }));
 
-        httpServer.start();
+        searchServer.start();
     }
 }
