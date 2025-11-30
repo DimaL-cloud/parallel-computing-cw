@@ -28,19 +28,22 @@ public class InvertedIndex implements SearchIndex {
 
     void addDocument(String filePath, String content) {
         String[] tokens = content.split(TOKEN_DELIMITER_PATTERN);
+        Map<String, Set<String>> localIndex = new HashMap<>();
         for (String token : tokens) {
             if (token.isBlank()) {
                 continue;
             }
             String term = token.toLowerCase(Locale.ROOT);
-
-            writeLock.lock();
-            try {
-                Set<String> files = index.computeIfAbsent(term, _ -> new HashSet<>());
-                files.add(filePath);
-            } finally {
-                writeLock.unlock();
+            localIndex.computeIfAbsent(term, _ -> new HashSet<>()).add(filePath);
+        }
+        writeLock.lock();
+        try {
+            for (Map.Entry<String, Set<String>> entry : localIndex.entrySet()) {
+                Set<String> files = index.computeIfAbsent(entry.getKey(), _ -> new HashSet<>());
+                files.addAll(entry.getValue());
             }
+        } finally {
+            writeLock.unlock();
         }
     }
 }
