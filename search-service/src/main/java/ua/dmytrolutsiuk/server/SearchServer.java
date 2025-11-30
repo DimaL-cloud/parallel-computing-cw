@@ -60,9 +60,8 @@ public class SearchServer implements AutoCloseable {
 
     private void handleClient(Socket socket) {
         try (socket;
-             BufferedReader reader = new BufferedReader(
-                     new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
-             OutputStream out = socket.getOutputStream()
+             var reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
+             var out = socket.getOutputStream()
         ) {
             String requestLine = reader.readLine();
             if (StringUtils.isBlank(requestLine)) {

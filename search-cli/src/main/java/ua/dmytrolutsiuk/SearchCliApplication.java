@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Scanner;
 
 @Slf4j
-public class Application {
+public class SearchCliApplication {
 
     private static final String BASE_URL = "http://localhost:8080";
 

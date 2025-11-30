@@ -1,4 +1,4 @@
-# Search Application
+# File Search Application
 Parallel computing coursework
 
 ## Stack 💻
