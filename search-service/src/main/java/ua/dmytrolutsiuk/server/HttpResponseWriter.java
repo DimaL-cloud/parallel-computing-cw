@@ -22,6 +22,9 @@ public class HttpResponseWriter {
                 "HTTP/1.1 200 OK\r\n" +
                         "Content-Type: application/json; charset=utf-8\r\n" +
                         "Content-Length: " + body.length + "\r\n" +
+                        "Access-Control-Allow-Origin: *\r\n" +
+                        "Access-Control-Allow-Methods: GET\r\n" +
+                        "Access-Control-Allow-Headers: Content-Type\r\n" +
                         "Connection: close\r\n\r\n"
         ).getBytes(StandardCharsets.UTF_8));
 
@@ -36,6 +39,9 @@ public class HttpResponseWriter {
                 "HTTP/1.1 " + status + " " + statusText + "\r\n" +
                         "Content-Type: application/json; charset=utf-8\r\n" +
                         "Content-Length: " + body.length + "\r\n" +
+                        "Access-Control-Allow-Origin: *\r\n" +
+                        "Access-Control-Allow-Methods: GET\r\n" +
+                        "Access-Control-Allow-Headers: Content-Type\r\n" +
                         "Connection: close\r\n\r\n"
         ).getBytes(StandardCharsets.UTF_8));
 
