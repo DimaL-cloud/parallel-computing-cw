@@ -12,7 +12,6 @@
     <modules>
         <module>search-service</module>
         <module>search-cli</module>
-        <module>search-web</module>
     </modules>
 
 </project>
